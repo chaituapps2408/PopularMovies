@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">PopularMovies</string>
+    <string name="sort_menu_name">Sort by</string>
+    <string-array name="sort_order">
+        <item>Sort by</item>
+        <item>Most Popular</item>
+        <item>Top Rated</item>
+    </string-array>
+
+    <string name="error_message">Unable ro retrieve movie list. Please try again later</string>
 </resources>
