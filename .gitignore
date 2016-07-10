@@ -35,6 +35,14 @@ captures/
 # Intellij
 *.iml
 .idea/workspace.xml
+.idea/
 
 # Keystore files
 *.jks
+.idea/libraries/
+app/libs/
+app/src/main/java/com/example/chaiy/popularmovies/network/resource/people/
+app/src/main/res/xml/
+libs/
+src/main/java/com/example/chaiy/popularmovies/network/resource/people/
+src/main/res/xml/
