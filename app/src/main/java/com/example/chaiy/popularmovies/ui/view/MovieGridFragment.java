@@ -1,6 +1,5 @@
 package com.example.chaiy.popularmovies.ui.view;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -25,13 +24,15 @@ import android.widget.Toast;
 import com.example.chaiy.popularmovies.R;
 import com.example.chaiy.popularmovies.helper.Constants;
 import com.example.chaiy.popularmovies.helper.SharedPreferenceUtil;
+import com.example.chaiy.popularmovies.helper.Utility;
 import com.example.chaiy.popularmovies.model.MovieItemModel;
 import com.example.chaiy.popularmovies.model.MoviesListResponse;
 import com.example.chaiy.popularmovies.presenter.MovieListPresenter;
 import com.example.chaiy.popularmovies.ui.adapter.MovieGridAdapter;
 
+import java.util.List;
+
 import retrofit2.Call;
-import retrofit2.Response;
 
 /**
  * Created by Chaiy on 7/8/2016.
@@ -49,6 +50,7 @@ public class MovieGridFragment extends Fragment implements IMovieGridFragment, A
 
     SharedPreferences preferences;
 
+    int selectedPosition = 0;
 
     public static MovieGridFragment newInstance() {
 
@@ -61,7 +63,7 @@ public class MovieGridFragment extends Fragment implements IMovieGridFragment, A
 
         super.onCreate(savedInstanceState);
 
-        presenter = new MovieListPresenter(this);
+        presenter = new MovieListPresenter(this, getContext());
         movieGridAdapter = new MovieGridAdapter(getContext(), presenter);
 
         setRetainInstance(true);
@@ -91,24 +93,44 @@ public class MovieGridFragment extends Fragment implements IMovieGridFragment, A
         progressBar = (ProgressBar) fragmentView.findViewById(R.id.progressBar);
 
         movieGrid = (RecyclerView) fragmentView.findViewById(R.id.movieGrid);
-        movieGrid.setLayoutManager(new GridLayoutManager(getContext(), 2));
+        movieGrid.setLayoutManager(new GridLayoutManager(getContext(), getResources().getInteger(R.integer.movies_per_row)));
 
         movieGrid.setAdapter(movieGridAdapter);
-
+        if (savedInstanceState != null) {
+            selectedPosition = savedInstanceState.getInt(Constants.APPLICATION_CONSTANTS.SELECTED_POSITION);
+        }
         return fragmentView;
 
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        if (selectedPosition != RecyclerView.NO_POSITION) {
+            outState.putInt(Constants.APPLICATION_CONSTANTS.SELECTED_POSITION, selectedPosition);
+        }
+        super.onSaveInstanceState(outState);
+    }
+
     private void displayError() {
+        progressBar.setVisibility(View.GONE);
+        movieGrid.setVisibility(View.VISIBLE);
         Toast.makeText(getContext(), getString(R.string.error_message), Toast.LENGTH_LONG).show();
     }
 
     @Override
-    public void displayMovieDetails(MovieItemModel movieItemModel) {
+    public void displayMovieDetails(MovieItemModel movieItemModel, int selectedPosition) {
+        this.selectedPosition = selectedPosition;
+        loadMovieDetails(movieItemModel);
+    }
 
-        Intent detailsIntent = new Intent(getActivity(), MovieDetailsActivity.class);
-        detailsIntent.putExtra(Constants.APPLICATION_CONSTANTS.BUNDLE_MOVIE_DETAILS, movieItemModel);
-        startActivity(detailsIntent);
+    private void loadMovieDetails(MovieItemModel movieItemModel) {
+        ((Callback) getActivity()).onItemClicked(movieItemModel);
+        movieGrid.smoothScrollToPosition(selectedPosition);
+    }
+
+    private void loadMovieDetailsInTwoPane(MovieItemModel movieItemModel) {
+        ((Callback) getActivity()).onLoadMovieDetailsInTwoPane(movieItemModel);
+        movieGrid.smoothScrollToPosition(selectedPosition);
     }
 
     @Override
@@ -119,20 +141,25 @@ public class MovieGridFragment extends Fragment implements IMovieGridFragment, A
     }
 
     @Override
-    public void onSuccess(Call call, Response response) {
+    public void onSuccess(List<MovieItemModel> movies) {
 
-        MoviesListResponse popularMoviesResponse = (MoviesListResponse) response.body();
-        if (popularMoviesResponse != null && popularMoviesResponse.getMovieList() != null) {
-            movieGridAdapter.setData(popularMoviesResponse.getMovieList());
-        } else {
+        if (Utility.IsNullOrEmpty(movies)) {
             displayError();
+            return;
         }
+        movieGridAdapter.setData(movies);
+
         movieGrid.setVisibility(View.VISIBLE);
+        if (selectedPosition >= movies.size()) {
+            selectedPosition = 0;
+        }
+        loadMovieDetailsInTwoPane(movies.get(selectedPosition));
         progressBar.setVisibility(View.GONE);
     }
 
+
     @Override
-    public void onFailure(Call call, Throwable t) {
+    public void onFailure(Call<MoviesListResponse> call, Throwable t) {
         Log.e(TAG, " error while fetching movies", t);
         movieGrid.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.GONE);
@@ -148,6 +175,9 @@ public class MovieGridFragment extends Fragment implements IMovieGridFragment, A
         } else if (i == 2) {
             SharedPreferenceUtil.saveSortPreference(getContext(), i);
             presenter.fetchTopRatedMovies(PAGE_INDEX);
+        } else if (i == 3) {
+            SharedPreferenceUtil.saveSortPreference(getContext(), i);
+            presenter.fetchFavouriteMovies(PAGE_INDEX);
         }
     }
 
@@ -156,5 +186,10 @@ public class MovieGridFragment extends Fragment implements IMovieGridFragment, A
 
     }
 
+    interface Callback {
+        void onItemClicked(MovieItemModel itemModel);
+
+        void onLoadMovieDetailsInTwoPane(MovieItemModel itemModel);
+    }
 
 }

@@ -10,10 +10,6 @@ import retrofit2.Response;
  */
 public interface NetworkResponseListener <R extends NetworkResponse>{
 
-    void fetchStarted();
 
-    void onSuccess(Call<R> call, Response<R> response);
-
-    void onFailure(Call<R> call, Throwable t);
 
 }

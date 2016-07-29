@@ -6,6 +6,8 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 /**
  * Created by Chaiy on 7/9/2016.
  */
@@ -53,7 +55,7 @@ public class MovieItemModel implements Parcelable {
 
     @SerializedName(value = "popularity")
     @Expose
-    String popularity;
+    float popularity;
 
     @SerializedName(value = "vote_count")
     @Expose
@@ -65,7 +67,37 @@ public class MovieItemModel implements Parcelable {
 
     @SerializedName(value = "vote_average")
     @Expose
-    double voteAverage;
+    float voteAverage;
+
+    boolean isFavourite;
+
+    public boolean isFavourite() {
+        return isFavourite;
+    }
+
+    public void setFavourite(boolean favourite) {
+        isFavourite = favourite;
+    }
+
+    List<ReviewItemModel> reviewsList;
+
+    List<TrailerItemModel> trailerList;
+
+    public List<ReviewItemModel> getReviewsList() {
+        return reviewsList;
+    }
+
+    public void setReviewsList(List<ReviewItemModel> reviewsList) {
+        this.reviewsList = reviewsList;
+    }
+
+    public List<TrailerItemModel> getTrailerList() {
+        return trailerList;
+    }
+
+    public void setTrailerList(List<TrailerItemModel> trailerList) {
+        this.trailerList = trailerList;
+    }
 
     public String getPosterPath() {
         return posterPath;
@@ -147,11 +179,11 @@ public class MovieItemModel implements Parcelable {
         this.backdropPath = backdropPath;
     }
 
-    public String getPopularity() {
+    public float getPopularity() {
         return popularity;
     }
 
-    public void setPopularity(String popularity) {
+    public void setPopularity(float popularity) {
         this.popularity = popularity;
     }
 
@@ -171,14 +203,17 @@ public class MovieItemModel implements Parcelable {
         this.video = video;
     }
 
-    public double getVoteAverage() {
+    public float getVoteAverage() {
         return voteAverage;
     }
 
-    public void setVoteAverage(double voteAverage) {
+    public void setVoteAverage(float voteAverage) {
         this.voteAverage = voteAverage;
     }
 
+
+    public MovieItemModel() {
+    }
 
     @Override
     public int describeContents() {
@@ -197,13 +232,12 @@ public class MovieItemModel implements Parcelable {
         dest.writeString(this.originalLanguage);
         dest.writeString(this.title);
         dest.writeString(this.backdropPath);
-        dest.writeString(this.popularity);
+        dest.writeFloat(this.popularity);
         dest.writeInt(this.vote_count);
         dest.writeByte(this.video ? (byte) 1 : (byte) 0);
-        dest.writeDouble(this.voteAverage);
-    }
-
-    public MovieItemModel() {
+        dest.writeFloat(this.voteAverage);
+        dest.writeTypedList(this.reviewsList);
+        dest.writeTypedList(this.trailerList);
     }
 
     protected MovieItemModel(Parcel in) {
@@ -217,13 +251,15 @@ public class MovieItemModel implements Parcelable {
         this.originalLanguage = in.readString();
         this.title = in.readString();
         this.backdropPath = in.readString();
-        this.popularity = in.readString();
+        this.popularity = in.readFloat();
         this.vote_count = in.readInt();
         this.video = in.readByte() != 0;
-        this.voteAverage = in.readDouble();
+        this.voteAverage = in.readFloat();
+        this.reviewsList = in.createTypedArrayList(ReviewItemModel.CREATOR);
+        this.trailerList = in.createTypedArrayList(TrailerItemModel.CREATOR);
     }
 
-    public static final Parcelable.Creator<MovieItemModel> CREATOR = new Parcelable.Creator<MovieItemModel>() {
+    public static final Creator<MovieItemModel> CREATOR = new Creator<MovieItemModel>() {
         @Override
         public MovieItemModel createFromParcel(Parcel source) {
             return new MovieItemModel(source);

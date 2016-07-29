@@ -5,7 +5,16 @@
         <item>Sort by</item>
         <item>Most Popular</item>
         <item>Top Rated</item>
+        <item>Favourite</item>
     </string-array>
 
     <string name="error_message">Unable ro retrieve movie list. Please try again later</string>
+
+    <string name="play_trailer">Play</string>
+    <string name="reviews">Reviews:</string>
+    <string name="trailers">Trailers:</string>
+    <string name="fetch_error">Failed to fetch List</string>
+    <string name="fav_add_message">" added to favourites"</string>
+    <string name="fav_remove_message">" removed from favourites"</string>
+
 </resources>

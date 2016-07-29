@@ -6,8 +6,16 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="android:spinnerDropDownItemStyle">@style/DropDownItemStyle</item>
     </style>
 
+    <style name="DropDownItemStyle" parent="@style/Widget.AppCompat.DropDownItem.Spinner">
+        <item name="android:textAppearance">@style/DropDownItemTextStyle</item>
+    </style>
 
+    <style name="DropDownItemTextStyle" parent="@style/Base.TextAppearance.AppCompat.Widget.TextView.SpinnerItem">
+        <item name="android:textColor">@android:color/white</item>
+    </style>
 
 </resources>

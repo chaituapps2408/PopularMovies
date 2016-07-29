@@ -21,6 +21,10 @@
 
         <activity android:name=".ui.view.MovieDetailsActivity" />
 
+        <service android:name=".services.FavouriteService" android:exported="false"></service>
+        <provider
+            android:authorities="com.example.chaiy.popularmovies"
+            android:name=".data.MoviesProvider"></provider>
     </application>
 
 </manifest>

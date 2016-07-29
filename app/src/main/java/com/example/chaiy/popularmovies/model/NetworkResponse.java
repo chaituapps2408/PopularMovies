@@ -20,6 +20,9 @@ public class NetworkResponse implements Parcelable {
     int totalPages;
 
 
+    public NetworkResponse() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -31,15 +34,12 @@ public class NetworkResponse implements Parcelable {
         dest.writeInt(this.totalPages);
     }
 
-    public NetworkResponse() {
-    }
-
     protected NetworkResponse(Parcel in) {
         this.totalResults = in.readInt();
         this.totalPages = in.readInt();
     }
 
-    public static final Parcelable.Creator<NetworkResponse> CREATOR = new Parcelable.Creator<NetworkResponse>() {
+    public static final Creator<NetworkResponse> CREATOR = new Creator<NetworkResponse>() {
         @Override
         public NetworkResponse createFromParcel(Parcel source) {
             return new NetworkResponse(source);

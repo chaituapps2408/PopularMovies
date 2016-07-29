@@ -62,11 +62,7 @@ public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridViewHolder> 
 
     @Override
     public void onClick(View view, int position) {
-        presenter.displayMovieDetails(getItemAtPosition(position));
+        presenter.displayMovieDetails(getItemAtPosition(position),position);
     }
 }
 
-interface OnRecyclerViewItemClickedListener {
-
-    void onClick(View view, int position);
-}
