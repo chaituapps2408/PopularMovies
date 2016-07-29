@@ -45,8 +45,11 @@ public class MovieListPresenter extends BasePresenter {
             @Override
             public void onResponse(Call<MoviesListResponse> call, Response<MoviesListResponse> response) {
 
-                iMovieGridFragment.onSuccess(response.body().getMovieList());
 
+                if (response != null && response.body() != null && response.body().getMovieList() != null)
+                    iMovieGridFragment.onSuccess(response.body().getMovieList());
+                else
+                    iMovieGridFragment.onFailure(call,null);
             }
 
             @Override
@@ -71,7 +74,10 @@ public class MovieListPresenter extends BasePresenter {
             @Override
             public void onResponse(Call<MoviesListResponse> call, Response<MoviesListResponse> response) {
 
-                iMovieGridFragment.onSuccess(response.body().getMovieList());
+                if (response != null && response.body() != null && response.body().getMovieList() != null)
+                    iMovieGridFragment.onSuccess(response.body().getMovieList());
+                else
+                    iMovieGridFragment.onFailure(call,null);
 
             }
 

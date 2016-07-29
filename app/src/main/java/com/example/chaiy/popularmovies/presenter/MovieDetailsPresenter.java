@@ -58,7 +58,10 @@ public class MovieDetailsPresenter extends BasePresenter implements NetworkRespo
             @Override
             public void onResponse(Call<TrailerListResponse> call, Response<TrailerListResponse> response) {
 
-                iMovieDetailsFragment.onFetchTrailerSuccess(response.body().getTrailerList());
+                if (response != null && response.body() != null && response.body().getTrailerList() != null)
+                    iMovieDetailsFragment.onFetchTrailerSuccess(response.body().getTrailerList());
+                else
+                    iMovieDetailsFragment.onFetchTrailerFailure(call, null);
 
             }
 
@@ -85,7 +88,10 @@ public class MovieDetailsPresenter extends BasePresenter implements NetworkRespo
             @Override
             public void onResponse(Call<ReviewListResponse> call, Response<ReviewListResponse> response) {
 
-                iMovieDetailsFragment.onFetchReviewSuccess(response.body().getReviewList());
+                if (response != null && response.body() != null && response.body().getReviewList() != null)
+                    iMovieDetailsFragment.onFetchReviewSuccess(response.body().getReviewList());
+                else
+                    iMovieDetailsFragment.onFetchReviewFailure(call, null);
 
             }
 

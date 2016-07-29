@@ -103,6 +103,27 @@ public class MovieDetailsFragment extends Fragment implements IMovieDetailsFragm
         return rootView;
     }
 
+    private void restoreState(Bundle savedInstanceState) {
+        if (savedInstanceState == null) {
+            return;
+        }
+
+        this.movieItemModel = savedInstanceState.getParcelable(Constants.APPLICATION_CONSTANTS.BUNDLE_MOVIE_DETAILS);
+    }
+
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(Constants.APPLICATION_CONSTANTS.BUNDLE_MOVIE_DETAILS, movieItemModel);
+    }
+
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        restoreState(savedInstanceState);
+    }
 
     private void setupViews(View rootView) {
 
